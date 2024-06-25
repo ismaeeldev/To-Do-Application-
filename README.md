@@ -45,5 +45,5 @@ Feel free to reach out with any questions or suggestions!
 
 ---
 
-[Project Link](https://github.com/ismaeeldev/To-Do-Application)
+[Project Link](https://ismaeeldev.github.io/To-Do-Application-/)
 
