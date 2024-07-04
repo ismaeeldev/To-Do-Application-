@@ -35,7 +35,6 @@ add.addEventListener("click", () => {
 remove.addEventListener("click", () => {
     localStorage.clear();
     location.reload()
-    // alert("hi")
 });
 
 closeIcon.addEventListener("click", () => {
@@ -45,8 +44,12 @@ closeIcon.addEventListener("click", () => {
     document.querySelector("body").style.overflow = "auto";
 });
 
+let body = true;
 function showNotes() {
-    if (!notes) return;
+    if (!notes) {
+        return;
+    }
+
     document.querySelectorAll(".note").forEach((li) => li.remove());
     notes.forEach((note, id) => {
         let filterDesc = note.description.replaceAll("\n", "<br/>");
@@ -68,8 +71,11 @@ function showNotes() {
                     </li>`;
         add.insertAdjacentHTML("afterend", liTag);
     });
+
 }
+
 showNotes();
+
 
 function showMenu(elem) {
     elem.parentElement.classList.add("show");
@@ -122,6 +128,81 @@ addBtn.addEventListener("click", (e) => {
         closeIcon.click();
     }
 });
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+}
+
+
+
+
+
+const searchInput = document.getElementById("searchInput");
+searchInput.addEventListener("input", function () {
+    const searchText = this.value.trim();
+    showFilteredNotes(searchText, "");
+});
+
+
+const searchDate = document.getElementById("datePicker");
+searchDate.addEventListener("change", function () {
+    const selectedDate = formatDate(this.value);
+
+    console.log(selectedDate);
+    showFilteredNotes("", selectedDate);
+})
+
+
+function showFilteredNotes(searchText = '', searchDate = '') {
+    document.querySelectorAll(".note").forEach((li) => li.remove());
+
+    const filteredNotes = notes.filter(note => {
+        const titleMatches = note.title.toLowerCase().includes(searchText.toLowerCase());
+
+        if (searchDate) {
+            const searchedDate = new Date(searchDate);
+            const predefinedDate = new Date(note.date);
+
+            // Check if both title and date match
+            if (titleMatches && searchedDate.getTime() === predefinedDate.getTime()) {
+                return true;
+            }
+        } else {
+            // If no date is provided, only match the title
+            if (titleMatches) {
+                return true;
+            }
+        }
+
+        return false;
+    });
+
+
+    filteredNotes.forEach((note, id) => {
+        body = false;
+        let filterDesc = note.description.replaceAll("\n", "<br/>");
+        let liTag = `<li class="note">
+                        <div class="details">
+                            <p>${note.title}</p>
+                            <span>${filterDesc}</span>
+                        </div>
+                        <div class="bottom-content">
+                            <span>${note.date}</span>
+                            <div class="settings">
+                                <i onclick="showMenu(this)" class="uil uil-ellipsis-h"></i>
+                                <ul class="menu">
+                                    <li onclick="updateNote(${id}, '${note.title}', '${filterDesc}')"><i class="uil uil-pen"></i>Edit</li>
+                                    <li onclick="deleteNote(${id})"><i class="uil uil-trash"></i>Delete</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>`;
+        add.insertAdjacentHTML("afterend", liTag);
+    });
+
+}
 
 
 
