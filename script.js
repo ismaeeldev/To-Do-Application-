@@ -1,3 +1,4 @@
+// Variables and Constants
 const add = document.querySelector("#add"),
     remove = document.getElementById("remove"),
     popupBox = document.querySelector(".popup-box"),
@@ -25,6 +26,7 @@ const notes = JSON.parse(localStorage.getItem("notes") || "[]");
 let isUpdate = false,
     updateId;
 
+// Event Listeners
 add.addEventListener("click", () => {
     popupTitle.innerText = "Add a new Task";
     addBtn.innerText = "Add Task";
@@ -32,6 +34,7 @@ add.addEventListener("click", () => {
     document.querySelector("body").style.overflow = "hidden";
     if (window.innerWidth > 660) titleTag.focus();
 });
+
 remove.addEventListener("click", () => {
     localStorage.clear();
     location.reload()
@@ -44,7 +47,7 @@ closeIcon.addEventListener("click", () => {
     document.querySelector("body").style.overflow = "auto";
 });
 
-let body = true;
+// Show Notes
 function showNotes() {
     if (!notes) {
         return;
@@ -71,12 +74,11 @@ function showNotes() {
                     </li>`;
         add.insertAdjacentHTML("afterend", liTag);
     });
-
 }
 
 showNotes();
 
-
+// Show Menu
 function showMenu(elem) {
     elem.parentElement.classList.add("show");
     document.addEventListener("click", (e) => {
@@ -86,6 +88,7 @@ function showMenu(elem) {
     });
 }
 
+// Delete Note
 function deleteNote(noteId) {
     let confirmDel = confirm("Are you sure you want to delete this note?");
     if (!confirmDel) return;
@@ -94,6 +97,7 @@ function deleteNote(noteId) {
     showNotes();
 }
 
+// Update Note
 function updateNote(noteId, title, filterDesc) {
     let description = filterDesc.replaceAll("<br/>", "\r\n");
     updateId = noteId;
@@ -105,6 +109,7 @@ function updateNote(noteId, title, filterDesc) {
     addBtn.innerText = "Update Note";
 }
 
+// Add or Update Note
 addBtn.addEventListener("click", (e) => {
     e.preventDefault();
     let title = titleTag.value.trim(),
@@ -129,22 +134,19 @@ addBtn.addEventListener("click", (e) => {
     }
 });
 
+// Format Date
 function formatDate(dateString) {
     const date = new Date(dateString);
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString('en-US', options);
 }
 
-
-
-
-
+// Search Notes
 const searchInput = document.getElementById("searchInput");
 searchInput.addEventListener("input", function () {
     const searchText = this.value.trim();
     showFilteredNotes(searchText, "");
 });
-
 
 const searchDate = document.getElementById("datePicker");
 searchDate.addEventListener("change", function () {
@@ -152,9 +154,9 @@ searchDate.addEventListener("change", function () {
 
     console.log(selectedDate);
     showFilteredNotes("", selectedDate);
-})
+});
 
-
+// Show Filtered Notes
 function showFilteredNotes(searchText = '', searchDate = '') {
     document.querySelectorAll(".note").forEach((li) => li.remove());
 
@@ -179,7 +181,6 @@ function showFilteredNotes(searchText = '', searchDate = '') {
         return false;
     });
 
-
     filteredNotes.forEach((note, id) => {
         body = false;
         let filterDesc = note.description.replaceAll("\n", "<br/>");
@@ -201,8 +202,4 @@ function showFilteredNotes(searchText = '', searchDate = '') {
                     </li>`;
         add.insertAdjacentHTML("afterend", liTag);
     });
-
 }
-
-
-
